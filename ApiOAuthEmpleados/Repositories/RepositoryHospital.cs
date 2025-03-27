@@ -24,7 +24,7 @@ namespace ApiOAuthEmpleados.Repositories
                 (x => x.IdEmpleado == idEmpleado);
         }
 
-        public async Task<Empleado>LogInEmpleado
+        public async Task<Empleado>LogInEmpleadoAsync
             (string apellido,int idEmpleado)
         {
             return await this.context.Empleados
