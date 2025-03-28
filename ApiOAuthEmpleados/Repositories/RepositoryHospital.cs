@@ -18,7 +18,14 @@ namespace ApiOAuthEmpleados.Repositories
             return await this.context.Empleados.ToListAsync();
         }
 
-        public async Task<Empleado>FindEmpleado(int idEmpleado)
+        public async Task<List<Empleado>>GetCompisEmpleadoAsync(int idDepartamento)
+        {
+            return await this.context.Empleados
+                .Where(x => x.IdDepartamento == idDepartamento)
+                .ToListAsync();
+        }
+
+        public async Task<Empleado>FindEmpleadoAsync(int idEmpleado)
         {
             return await this.context.Empleados.FirstOrDefaultAsync
                 (x => x.IdEmpleado == idEmpleado);
@@ -29,8 +36,7 @@ namespace ApiOAuthEmpleados.Repositories
         {
             return await this.context.Empleados
                 .Where(x => x.Apellido == apellido
-                && x.IdEmpleado == idEmpleado).FirstOrDefaultAsync();
-                
+                && x.IdEmpleado == idEmpleado).FirstOrDefaultAsync();   
         }
     }
 }
