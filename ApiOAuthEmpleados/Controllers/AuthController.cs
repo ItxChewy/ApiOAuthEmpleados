@@ -29,7 +29,7 @@ namespace ApiOAuthEmpleados.Controllers
         {
             Empleado empleado = await this.repo.LogInEmpleadoAsync(model.UserName,
                 int.Parse(model.Password));
-            if(empleado == null)
+            if (empleado == null)
             {
                 return Unauthorized();
             }
@@ -41,18 +41,20 @@ namespace ApiOAuthEmpleados.Controllers
                     SecurityAlgorithms.HmacSha256);
                 string jsonEmpleado =
                     JsonConvert.SerializeObject(empleado);
+
                 Claim[] informacion = new[]
                 {
-                    new Claim("UserData",jsonEmpleado)
+                    new Claim("UserData",jsonEmpleado),
+                    new Claim(ClaimTypes.Role, empleado.Oficio)
                 };
-                JwtSecurityToken token = 
+                JwtSecurityToken token =
                     new JwtSecurityToken(
                         claims: informacion,
-                        issuer:this.helper.Issuer,
+                        issuer: this.helper.Issuer,
                         audience: this.helper.Audience,
                         signingCredentials: credentials,
                         expires: DateTime.UtcNow.AddMinutes(20),
-                        notBefore:DateTime.UtcNow
+                        notBefore: DateTime.UtcNow
                         );
                 return Ok(new
                 {
