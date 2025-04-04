@@ -12,6 +12,9 @@ builder.Services.AddSingleton<HelperActionServicesOAuth>(helper);
 builder.Services.AddAuthentication(helper.GetAuthenticateSchema())
     .AddJwtBearer(helper.GetJwtBearerOptions());
 
+HelperCryptography.Initialize(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+
 // Add services to the container.
 string connectionString = builder.Configuration.GetConnectionString("Sql");
 builder.Services.AddTransient<RepositoryHospital>();

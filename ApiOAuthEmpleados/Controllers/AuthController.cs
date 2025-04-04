@@ -39,13 +39,24 @@ namespace ApiOAuthEmpleados.Controllers
                     new SigningCredentials
                     (this.helper.GetKeyToken(),
                     SecurityAlgorithms.HmacSha256);
+
+                EmpleadoModel modelEmp = new EmpleadoModel();
+                modelEmp.IdEmpleado = empleado.IdEmpleado;
+                modelEmp.Apellido = empleado.Apellido;
+                modelEmp.Oficio = empleado.Oficio;
+                modelEmp.IdDepartamento = empleado.IdDepartamento;
+
+                //string jsonEmpleado =
+                //    JsonConvert.SerializeObject(empleado);
                 string jsonEmpleado =
-                    JsonConvert.SerializeObject(empleado);
+                   JsonConvert.SerializeObject(modelEmp);
+
+                string jsonCifrado = HelperCryptography.EncryptString(jsonEmpleado);
 
                 Claim[] informacion = new[]
                 {
-                    new Claim("UserData",jsonEmpleado),
-                    new Claim(ClaimTypes.Role, empleado.Oficio)
+                    new Claim("UserData",jsonCifrado),
+                    //new Claim(ClaimTypes.Role, empleado.Oficio)
                 };
                 JwtSecurityToken token =
                     new JwtSecurityToken(

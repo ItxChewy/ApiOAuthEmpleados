@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using ApiOAuthEmpleados.Helpers;
 using ApiOAuthEmpleados.Models;
 using ApiOAuthEmpleados.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -13,10 +14,13 @@ namespace ApiOAuthEmpleados.Controllers
     public class EmpleadosController : ControllerBase
     {
         private RepositoryHospital repo;
+        private HelperEmpleadoToken helper;
 
-        public EmpleadosController(RepositoryHospital repo)
+
+        public EmpleadosController(RepositoryHospital repo,HelperEmpleadoToken helper)
         {
             this.repo = repo;
+            this.helper = helper;
         }
 
         [HttpGet]
@@ -36,13 +40,10 @@ namespace ApiOAuthEmpleados.Controllers
         [Authorize]
         [HttpGet]
         [Route("[action]")]
-        public async Task<ActionResult<Empleado>>Perfil()
+        public async Task<ActionResult<EmpleadoModel>>Perfil()
         {
-            Claim claim = HttpContext.User.FindFirst
-                (x => x.Type == "UserData");
-            string json = claim.Value;
-            Empleado empleado = JsonConvert.DeserializeObject<Empleado>(json);
-            return await this.repo.FindEmpleadoAsync(empleado.IdEmpleado);
+            EmpleadoModel model = this.helper.GetEmpleado();
+            return model;
         }
 
         [Authorize]
@@ -50,10 +51,9 @@ namespace ApiOAuthEmpleados.Controllers
         [Route("[action]")]
         public async Task<ActionResult<List<Empleado>>> Compis()
         {
-            string json = HttpContext.User.FindFirst
-                (x => x.Type == "UserData").Value;
-            Empleado empleado = JsonConvert.DeserializeObject<Empleado>(json);
-            return await this.repo.GetCompisEmpleadoAsync(empleado.IdDepartamento);
+            EmpleadoModel model = this.helper.GetEmpleado();
+
+            return await this.repo.GetCompisEmpleadoAsync(model.IdDepartamento);
         }
 
         [HttpGet]
